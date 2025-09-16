@@ -5,7 +5,6 @@ body {
   margin: 0;
   padding: 20px;
 }
-
 .container {
   max-width: 900px;
   margin: auto;
@@ -14,24 +13,29 @@ body {
   border-radius: 12px;
   box-shadow: 0 0 12px rgba(0,0,0,0.1);
 }
-
 h1, h2, h3 {
   color: #cc5500;
 }
-
-form label, form h3 {
-  display: block;
-  margin: 15px 0 5px;
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-bottom: 20px;
 }
-
+.form-group {
+  flex: 1;
+  min-width: 250px;
+}
+form label {
+  display: block;
+  margin-bottom: 10px;
+}
 input[type="text"] {
   width: 100%;
   padding: 6px;
   font-size: 16px;
 }
-
-button {
-  margin-top: 20px;
+button[type="submit"], #clearOrders {
   padding: 10px 20px;
   background-color: #ff9900;
   color: white;
@@ -40,23 +44,19 @@ button {
   font-size: 16px;
   cursor: pointer;
 }
-
-button:hover {
+button[type="submit"]:hover, #clearOrders:hover {
   background-color: #cc7a00;
 }
-
 #orderTable {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
 }
-
 #orderTable th, #orderTable td {
   border: 1px solid #ccc;
   padding: 8px;
   text-align: center;
 }
-
 input[type="radio"], input[type="checkbox"] {
   margin-right: 6px;
 }
