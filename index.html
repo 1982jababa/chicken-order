@@ -11,33 +11,50 @@
     <h1>🐔 雞排訂購單</h1>
 
     <form id="orderForm">
-      <label>
-        🙋‍♂️ 姓名：
-        <input type="text" id="name" required />
-      </label>
+      <div class="form-row">
+        <label>姓名：<input type="text" id="name" required /></label>
+      </div>
 
-      <h3>🍗 主餐（擇一）</h3>
-      <div id="mainDish"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <h3>主餐（擇一）</h3>
+          <div id="mainDish"></div>
+        </div>
+        <div class="form-group">
+          <h3>口味／調味（擇一，可不選）</h3>
+          <div id="flavor"></div>
+        </div>
+      </div>
 
-      <h3>🌶 口味／調味（擇一）</h3>
-      <div id="flavor"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <h3>點心（可複選）</h3>
+          <div id="snacks"></div>
+        </div>
+        <div class="form-group">
+          <h3>飲料（可複選）</h3>
+          <div id="drinks"></div>
+        </div>
+      </div>
 
-      <h3>🧂 點心系列（可複選）</h3>
-      <div id="snacks"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <h3>套餐（擇一，可不選）</h3>
+          <div id="combo"></div>
+        </div>
+      </div>
 
-      <h3>🥤 飲料（可複選）</h3>
-      <div id="drinks"></div>
+      <div class="form-row">
+        <h3>總金額：<span id="totalPrice">0</span> 元</h3>
+      </div>
 
-      <h3>🧺 套餐系列（擇一 可選）</h3>
-      <div id="combo"></div>
-
-      <h3>💰 總金額：<span id="totalPrice">0</span> 元</h3>
-
-      <button type="submit">✅ 送出訂單</button>
+      <div class="form-row">
+        <button type="submit">送出訂單</button>
+      </div>
     </form>
 
     <hr />
-    <h2>📋 訂單總覽</h2>
+    <h2>訂單總覽</h2>
     <table id="orderTable">
       <thead>
         <tr>
@@ -45,7 +62,9 @@
         </tr>
       </thead>
       <tbody></tbody>
+      <tfoot></tfoot>
     </table>
+    <button id="clearOrders">清除所有訂單</button>
   </div>
 
   <script src="script.js"></script>
