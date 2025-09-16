@@ -7,7 +7,7 @@ body {
 }
 
 .container {
-  max-width: 800px;
+  max-width: 900px;
   margin: auto;
   padding: 20px;
   background: #fff;
@@ -55,4 +55,8 @@ button:hover {
   border: 1px solid #ccc;
   padding: 8px;
   text-align: center;
+}
+
+input[type="radio"], input[type="checkbox"] {
+  margin-right: 6px;
 }
