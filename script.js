@@ -1,4 +1,4 @@
-// 價格設定，包括點心和套餐
+// 價格與品項設定
 const mainDishList = [
   { name: "脆皮雞排", price: 85 },
   { name: "無骨雞塊", price: 70 },
@@ -11,12 +11,12 @@ const flavorList = [
   { name: "原味", price: 0 },
   { name: "胡椒", price: 0 },
   { name: "辣味", price: 0 },
-  { name: "檸檬", price: 0 },
+  { name: "梅粉", price: 5 },
   { name: "綜合", price: 5 },
-  { name: "特調", price: 10 }
+  { name: "特調", price: 10 },
+  { name: "咖哩", price: 5 }
 ];
 
-// 點心系列
 const snackList = [
   { name: "柳葉魚", price: 39 },
   { name: "脆皮七里香", price: 30 },
@@ -52,7 +52,6 @@ const snackList = [
   { name: "炸茄子", price: 30 }
 ];
 
-// 飲料
 const drinksList = [
   { name: "冬瓜紅茶", price: 10 },
   { name: "泡沫綠茶", price: 10 },
@@ -60,13 +59,57 @@ const drinksList = [
   { name: "雪碧", price: 20 }
 ];
 
-// 套餐
 const comboList = [
   { name: "1號套餐：雞排 + 薯條 + 飲料", price: 120 },
   { name: "3號套餐：腿排 + 薯條 + 飲料", price: 120 }
 ];
 
-// 建立選項：單選、複選
+// 你的 Google Sheets Web App URL
+const googleScriptURL = 'https://script.google.com/macros/s/AKfycbyrA_MVNiHvIlQ0nI-Dh1_ta3LlaDaqg5hLl23qXuQgT3fszsaPpyILSItrmceJ5tT3/exec';
+
+// localStorage 儲存、讀取
+function loadOrders() {
+  const data = localStorage.getItem('orders');
+  if (!data) return [];
+  try {
+    return JSON.parse(data);
+  } catch {
+    return [];
+  }
+}
+
+function saveOrders(orders) {
+  localStorage.setItem('orders', JSON.stringify(orders));
+}
+
+function renderOrders() {
+  const orders = loadOrders();
+  const tbody = document.querySelector("#orderTable tbody");
+  tbody.innerHTML = '';
+  orders.forEach(order => {
+    const row = tbody.insertRow();
+    row.innerHTML = `
+      <td>${order.name}</td>
+      <td>${order.mainName}</td>
+      <td>${order.flavorName}</td>
+      <td>${order.snackNames}</td>
+      <td>${order.drinkNames}</td>
+      <td>${order.comboName}</td>
+      <td>${order.price}</td>
+    `;
+  });
+  // 彙整所有訂單的總金額
+  const totalAll = orders.reduce((sum, o) => sum + (o.price || 0), 0);
+  let footer = document.querySelector("#orderTable tfoot");
+  if (!footer) {
+    footer = document.createElement('tfoot');
+    document.querySelector("#orderTable").appendChild(footer);
+  }
+  footer.innerHTML = `<tr>
+    <td colspan="6" style="text-align:right;">總金額合計：</td><td>${totalAll}</td>
+  </tr>`;
+}
+
 function createRadioOptions(list, containerId, groupName) {
   const container = document.getElementById(containerId);
   list.forEach((item, idx) => {
@@ -101,14 +144,10 @@ function calculateTotal() {
   let total = 0;
   // 主餐
   const mainIdx = document.querySelector('input[name="mainDish"]:checked');
-  if (mainIdx) {
-    total += mainDishList[mainIdx.value].price;
-  }
+  if (mainIdx) total += mainDishList[mainIdx.value].price;
   // 口味
   const flavorIdx = document.querySelector('input[name="flavor"]:checked');
-  if (flavorIdx) {
-    total += flavorList[flavorIdx.value].price;
-  }
+  if (flavorIdx) total += flavorList[flavorIdx.value].price;
   // 點心
   document.querySelectorAll('input[name="snacks"]:checked').forEach(cb => {
     total += snackList[cb.value].price;
@@ -117,31 +156,30 @@ function calculateTotal() {
   document.querySelectorAll('input[name="drinks"]:checked').forEach(cb => {
     total += drinksList[cb.value].price;
   });
-  // 套餐（擇一，可不選）
+  // 套餐
   const comboIdx = document.querySelector('input[name="combo"]:checked');
-  if (comboIdx) {
-    total += comboList[comboIdx.value].price;
-  }
+  if (comboIdx) total += comboList[comboIdx.value].price;
 
   return total;
 }
 
 function updateTotalDisplay() {
-  const total = calculateTotal();
-  document.getElementById('totalPrice').innerText = total;
+  document.getElementById('totalPrice').innerText = calculateTotal();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // 建立選項
   createRadioOptions(mainDishList, 'mainDish', 'mainDish');
   createRadioOptions(flavorList, 'flavor', 'flavor');
   createCheckboxOptions(snackList, 'snacks');
   createCheckboxOptions(drinksList, 'drinks');
   createRadioOptions(comboList, 'combo', 'combo');
 
-  // 當有改變選項時更新總價
+  renderOrders();
+  updateTotalDisplay();
+
   document.getElementById('orderForm').addEventListener('change', updateTotalDisplay);
 
-  // 表單送出
   document.getElementById('orderForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const name = document.getElementById('name').value.trim();
@@ -164,19 +202,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const price = calculateTotal();
 
-    const tbody = document.querySelector("#orderTable tbody");
-    const row = tbody.insertRow();
-    row.innerHTML = `
-      <td>${name}</td>
-      <td>${mainName}</td>
-      <td>${flavorName}</td>
-      <td>${snackNames}</td>
-      <td>${drinkNames}</td>
-      <td>${comboName}</td>
-      <td>${price}</td>
-    `;
+    // 加到 local 儲存
+    const orders = loadOrders();
+    orders.push({
+      name,
+      mainName,
+      flavorName,
+      snackNames,
+      drinkNames,
+      comboName,
+      price
+    });
+    saveOrders(orders);
+    renderOrders();
 
-    // 重設表單 & 清總價
+    // POST 給 Google Sheets
+    const formData = new FormData();
+    formData.append('timestamp', new Date().toISOString());
+    formData.append('姓名', name);
+    formData.append('主餐', mainName);
+    formData.append('口味', flavorName);
+    formData.append('點心', snackNames);
+    formData.append('飲料', drinkNames);
+    formData.append('套餐', comboName);
+    formData.append('金額', price);
+
+    fetch(googleScriptURL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: formData
+    }).then(()=> {
+      console.log('送 Google Sheets 成功');
+    }).catch(err => {
+      console.error('傳送失敗: ', err);
+    });
+
+    // 重設表單
     document.getElementById('orderForm').reset();
     updateTotalDisplay();
   });
