@@ -19,18 +19,10 @@
         <div class="form-group">
           <h3>主餐（擇一）</h3>
           <div id="mainDish"></div>
+          <!-- 主餐口味會動態出現在這 -->
+          <div id="mainFlavorHost"></div>
         </div>
-        <div class="form-group">
-          <h3>口味／調味（擇一，可不選）</h3>
-          <div id="flavor"></div>
-        </div>
-      </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <h3>點心（可複選）</h3>
-          <div id="snacks"></div>
-        </div>
         <div class="form-group">
           <h3>飲料（可複選）</h3>
           <div id="drinks"></div>
@@ -38,6 +30,12 @@
       </div>
 
       <div class="form-row">
+        <div class="form-group">
+          <h3>點心（可複選）</h3>
+          <!-- 每個點心右邊會動態出現「口味下拉」 -->
+          <div id="snacks" class="grid"></div>
+        </div>
+
         <div class="form-group">
           <h3>套餐（擇一，可不選）</h3>
           <div id="combo"></div>
@@ -58,13 +56,13 @@
     <table id="orderTable">
       <thead>
         <tr>
-          <th>姓名</th><th>主餐</th><th>口味</th><th>點心</th><th>飲料</th><th>套餐</th><th>金額</th>
+          <th>姓名</th><th>主餐</th><th>口味（主餐）</th><th>點心＋口味</th><th>飲料</th><th>套餐</th><th>金額</th>
         </tr>
       </thead>
       <tbody></tbody>
       <tfoot></tfoot>
     </table>
-    <button id="clearOrders">清除所有訂單</button>
+    <button id="clearOrders" class="danger">清除所有訂單（本機）</button>
   </div>
 
   <script src="script.js"></script>
